@@ -54,7 +54,7 @@ launch_spark_app = KubernetesPodOperator(
         f'echo \'{json.dumps(spark_application)}\' > /spark_job/app/application.yaml',
         'kubectl apply -f /path/to/spark/application.yaml'
     ],
-    volume_mount= k8s.V1VolumeMount(name='spark-volume', mountPath= '/spark_job/app'),
+    volume_mount= k8s.V1VolumeMount(name='spark-volume', mount_path= '/spark_job/app'),
     volumes=[{'name': 'spark-volume', 'emptyDir': {}}],
     dag=dag
 )
