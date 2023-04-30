@@ -94,5 +94,5 @@ launch_spark_app = KubernetesPodOperator(
     volumes=volumes,
     get_logs=True,
     dag=dag,
-    termination_grace_period_seconds=3600
+    termination_grace_period_seconds=60
 )
