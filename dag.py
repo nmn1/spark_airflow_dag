@@ -25,7 +25,7 @@ spark_application = {
     'kind': 'SparkApplication',
     'metadata': {
         'name': 'my-spark-app',
-        'namespace': 'spark-operator'
+        'namespace': 'default'
     },
     'spec': {
         'type': 'Python',
