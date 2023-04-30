@@ -60,7 +60,7 @@ launch_spark_app = KubernetesPodOperator(
     arguments=[
         'echo starting spark application', 
         f'echo \'{json.dumps(spark_application)}\' > /spark_job/app/application.yaml',
-        'kubectl apply -f /path/to/spark/application.yaml'
+        'kubectl apply -f /spark_job/app/application.yaml'
     ],
     volume_mounts=volume_mounts,
     volumes=volumes,
