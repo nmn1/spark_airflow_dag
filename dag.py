@@ -37,19 +37,19 @@ spark_application = {
         'sparkVersion': '3.1.1',
         'restartPolicy': {
            'type': 'OnFailure',
-           'onFailureRetries': '3',
-           'onFailureRetryInterval': '10',
-           'onSubmissionFailureRetries': '5',
-           'onSubmissionFailureRetryInterval': '20',
+           'onFailureRetries': 3,
+           'onFailureRetryInterval': '10s',
+           'onSubmissionFailureRetries': 5,
+           'onSubmissionFailureRetryInterval': '20s',
         },   
         'dynamicAllocation': {
-           'enabled': 'true',
-           'initialExecutors': '2',
-           'minExecutors': '2',
-           'maxExecutors': '20',
+           'enabled': True,
+           'initialExecutors': 2,
+           'minExecutors': 2,
+           'maxExecutors': 20,
         },   
         'driver': {
-           'cores': '1',
+           'cores': 1,
            'coreLimit': "1200m",
            'memory': "512m",
            'labels': {
@@ -58,8 +58,8 @@ spark_application = {
            'serviceAccount': 'my-release-spark'
         },
         'executor': {
-           'cores': '1',
-           'instances': '1',
+           'cores': 1,
+           'instances': 1,
            'memory': "512m",
            'labels': {
               'version': '3.1.1'
