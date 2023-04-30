@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
+from kubernetes.client import models as k8s
 import json
 
 default_args = {
@@ -53,7 +54,7 @@ launch_spark_app = KubernetesPodOperator(
         f'echo \'{json.dumps(spark_application)}\' > /spark_job/app/application.yaml',
         'kubectl apply -f /path/to/spark/application.yaml'
     ],
-    volume_mounts=[{'name': 'spark-volume', 'mountPath': '/spark_job/app'}],
+    volume_mount= k8s.V1VolumeMount(name='spark-volume', mountPath= '/spark_job/app'),
     volumes=[{'name': 'spark-volume', 'emptyDir': {}}],
     dag=dag
 )
