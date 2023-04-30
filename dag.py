@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
 from kubernetes.client.models import V1VolumeMount, V1Volume
-import json
+import yaml
 
 default_args = {
     'owner': 'airflow',
@@ -20,55 +20,48 @@ dag = DAG(
     schedule_interval=None
 )
 
-spark_application = {
-    'apiVersion': 'sparkoperator.k8s.io/v1beta2',
-    'kind': 'SparkApplication',
-    'metadata': {
-        'name': 'my-spark-app',
-        'namespace': 'default'
-    },
-    'spec': {
-        'type': 'Python',
-        'mode': 'cluster',
-        'pythonVersion': '3',
-        'image': 'gcr.io/spark-operator/spark-py:v3.1.1',
-        'imagePullPolicy': 'Always',
-        'mainApplicationFile': 'local:///opt/spark/examples/src/main/python/pi.py',
-        'sparkVersion': '3.1.1',
-        'restartPolicy': {
-           'type': 'OnFailure',
-           'onFailureRetries': 3,
-           'onFailureRetryInterval': '10s',
-           'onSubmissionFailureRetries': 5,
-           'onSubmissionFailureRetryInterval': '20s',
-        },   
-        'dynamicAllocation': {
-           'enabled': True,
-           'initialExecutors': 2,
-           'minExecutors': 2,
-           'maxExecutors': 20,
-        },   
-        'driver': {
-           'cores': 1,
-           'coreLimit': "1200m",
-           'memory': "512m",
-           'labels': {
-              'version': '3.1.1'
-           },  
-           'serviceAccount': 'my-release-spark'
-        },
-        'executor': {
-           'cores': 1,
-           'instances': 1,
-           'memory': "512m",
-           'labels': {
-              'version': '3.1.1'
-            }, 
-           'serviceAccount': 'my-release-spark'
-        }
-        
-    }
-}
+spark_application_yaml = '''
+apiVersion: sparkoperator.k8s.io/v1beta2
+kind: SparkApplication
+metadata:
+  name: my-spark-app
+  namespace: default
+spec:
+  type: Python
+  mode: cluster
+  pythonVersion: '3'
+  image: 'gcr.io/spark-operator/spark-py:v3.1.1'
+  imagePullPolicy: Always
+  mainApplicationFile: local:///opt/spark/examples/src/main/python/pi.py
+  sparkVersion: '3.1.1'
+  restartPolicy:
+    type: OnFailure
+    onFailureRetries: 3
+    onFailureRetryInterval: 10s
+    onSubmissionFailureRetries: 5
+    onSubmissionFailureRetryInterval: 20s
+  dynamicAllocation:
+    enabled: true
+    initialExecutors: 2
+    minExecutors: 2
+    maxExecutors: 20
+  driver:
+    cores: 1
+    coreLimit: '1200m'
+    memory: '512m'
+    labels:
+      version: '3.1.1'
+    serviceAccount: my-release-spark
+  executor:
+    cores: 1
+    instances: 1
+    memory: '512m'
+    labels:
+      version: '3.1.1'
+    serviceAccount: my-release-spark
+'''
+
+spark_application = yaml.safe_load(spark_application_yaml)
 
 volume_mounts = [V1VolumeMount(name='spark-volume', mount_path='/spark_job/app')]
 
@@ -86,7 +79,7 @@ launch_spark_app = KubernetesPodOperator(
     cmds=['/bin/bash', '-c'],
     arguments=[
         'echo starting spark application', 
-        f'echo \'{json.dumps(spark_application)}\' > /spark_job/app/application.yaml',
+        f'echo \'{spark_application_yaml}\' > /spark_job/app/application.yaml',
         'cat /spark_job/app/application.yaml',
         'kubectl apply -f /spark_job/app/application.yaml'
     ],
