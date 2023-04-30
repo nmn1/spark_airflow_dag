@@ -52,6 +52,7 @@ spec:
     labels:
       version: '3.1.1'
     serviceAccount: my-release-spark
+    podName: spark-pi-driver
   executor:
     cores: 1
     instances: 1
