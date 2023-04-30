@@ -33,7 +33,7 @@ spark_application = {
         'pythonVersion': '3',
         'image': 'gcr.io/spark-operator/spark-py:v3.1.1',
         'imagePullPolicy': 'Always',
-        'mainApplicationFile': 'local:///opt/spark/examples/src/main/pyhton/pi.py',
+        'mainApplicationFile': 'local:///opt/spark/examples/src/main/python/pi.py',
         'sparkVersion': '3.1.1',
         'restartPolicy': {
            'type': 'OnFailure',
