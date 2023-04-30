@@ -35,11 +35,38 @@ spark_application = {
         'imagePullPolicy': 'Always',
         'mainApplicationFile': 'local:///opt/spark/examples/src/main/pyhton/pi.py',
         'sparkVersion': '3.1.1',
-        'sparkConf': {
-            'spark.executor.instances': '2',
-            'spark.executor.memory': '1g',
-            'spark.executor.cores': '1'
+        'restartPolicy': {
+           'type': 'OnFailure',
+           'onFailureRetries': '3',
+           'onFailureRetryInterval': '10',
+           'onSubmissionFailureRetries': '5',
+           'onSubmissionFailureRetryInterval': '20',
+        },   
+        'dynamicAllocation': {
+           'enabled': 'true',
+           'initialExecutors': '2',
+           'minExecutors': '2',
+           'maxExecutors': '20',
+        },   
+        'driver': {
+           'cores': '1',
+           'coreLimit': "1200m",
+           'memory': "512m",
+           'labels': {
+              'version': '3.1.1'
+           },  
+           'serviceAccount': 'my-release-spark'
+        },
+        'executor': {
+           'cores': '1',
+           'instances': '1',
+           'memory': "512m",
+           'labels': {
+              'version': '3.1.1'
+            }, 
+           'serviceAccount': 'my-release-spark'
         }
+        
     }
 }
 
