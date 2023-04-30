@@ -82,7 +82,7 @@ launch_spark_app = KubernetesPodOperator(
     task_id='launch_spark_app',
     name='spark-on-k8s',
     namespace='default',
-    image='gcr.io/spark-operator/spark:v3.1.1',
+    image='bitnami/kubectl:latest',
     cmds=['/bin/bash', '-c'],
     arguments=[
         'echo starting spark application', 
